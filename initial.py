@@ -72,6 +72,7 @@ def main(debug=False):
 
     # Load the Java template
     template = jinja_env.get_template('entity.template')
+    service_template = jinja_env.get_template('service.template')
 
     # Export to .dot file for visualization
     dot_folder = join(this_folder, 'dotexport')
@@ -92,6 +93,9 @@ def main(debug=False):
         with open(join(srcgen_folder,
                       "%s.java" % entity.name.capitalize()), 'w') as f:
             f.write(template.render(entity=entity, time=dt_string))
+        with open(join(srcgen_folder,
+                      "%sService.java" % entity.name.capitalize()), 'w') as f:
+            f.write(service_template.render(entity=entity, time=dt_string))
 
 
 if __name__ == "__main__":

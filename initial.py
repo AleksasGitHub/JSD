@@ -46,7 +46,8 @@ def main(debug=False):
         Maps type names from SimpleType to Java.
         """
         return {
-                'string': 'String'
+                'string': 'String',
+                'bool': 'boolean'
         }.get(s.name, s.name)
 
     def isSimpleType(s):
@@ -54,6 +55,12 @@ def main(debug=False):
         Check property type.
         """
         return isinstance(s, SimpleType)
+
+    def uncapitalize(s):
+        """
+        Change first letter to lowercase.
+        """
+        return s[0].lower() + s[1:]
 
     # Create the output folder
     srcgen_folder = join(this_folder, 'generated')
@@ -69,9 +76,11 @@ def main(debug=False):
     # Register the filter for mapping Entity type names to Java type names.
     jinja_env.filters['javatype'] = javatype
     jinja_env.filters['isSimpleType'] = isSimpleType
+    jinja_env.filters['uncapitalize'] = uncapitalize
 
     # Load the Java template
     template = jinja_env.get_template('entity.template')
+    controller_template = jinja_env.get_template('controller.template')
     interface_template = jinja_env.get_template('interface.template')
     service_template = jinja_env.get_template('service.template')
     repository_template = jinja_env.get_template('repository.template')
@@ -96,6 +105,9 @@ def main(debug=False):
                       "%s.java" % entity.name.capitalize()), 'w') as f:
             f.write(template.render(entity=entity, time=dt_string))
         with open(join(srcgen_folder,
+                      "%sController.java" % entity.name.capitalize()), 'w') as f:
+            f.write(controller_template.render(entity=entity, time=dt_string))
+        with open(join(srcgen_folder,
                       "%sInterface.java" % entity.name.capitalize()), 'w') as f:
             f.write(interface_template.render(entity=entity, time=dt_string))
         with open(join(srcgen_folder,
@@ -104,7 +116,6 @@ def main(debug=False):
         with open(join(srcgen_folder,
                       "%sRepository.java" % entity.name.capitalize()), 'w') as f:
             f.write(repository_template.render(entity=entity, time=dt_string))
-
 
 if __name__ == "__main__":
     main()

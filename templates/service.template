@@ -33,6 +33,6 @@ public class {{entity.name|capitalize}}Service implements {{entity.name|capitali
     @Override
     public void delete{{entity.name|capitalize}}(Long id) {
         {{entity.name|capitalize}} {{entity.name|uncapitalize}} = {{entity.name|uncapitalize}}Repository.get{{entity.name|capitalize}}ById(id);
-        return {{entity.name|uncapitalize}}Repository.delete({{entity.name|uncapitalize}});
+        {{entity.name|uncapitalize}}Repository.delete({{entity.name|uncapitalize}});
     }
 } 

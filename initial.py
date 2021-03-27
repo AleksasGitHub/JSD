@@ -12,6 +12,9 @@ import shutil
 this_folder = dirname(__file__)
 grammar_path = join(this_folder, 'grammar.tx')
 template_folder = join(this_folder, 'templates')
+backend_template_folder = join(template_folder, 'backend')
+frontend_template_folder = join(template_folder, 'frontend')
+
 base_folder = join(this_folder, 'project')
 project_folder = join(base_folder, 'demo')
 project_base_generated = join(project_folder,'src','main','java','com','example','demo','generated')
@@ -21,6 +24,9 @@ controllers_folder = join(project_base_generated,'controllers')
 repositories_folder = join(project_base_generated,'repositories')
 services_folder = join(project_base_generated,'services')
 models_folder = join(project_base_generated,'models')
+
+frontend_folder = join(base_folder, 'demo-app')
+frontend_base_folder = join(frontend_folder, 'src')
 
 class SimpleType(object):
     def __init__(self, parent, name):
@@ -81,6 +87,10 @@ def main(debug=False):
         mkdir(project_folder)
         copy_tree(join(this_folder, 'demo'), project_folder)
 
+    if not exists(frontend_folder):
+        mkdir(frontend_folder)
+        copy_tree(join(this_folder, 'demo-app'), frontend_folder)
+
     if not exists(project_base_generated):
         mkdir(project_base_generated)
     else:
@@ -103,22 +113,27 @@ def main(debug=False):
         mkdir(controllers_folder)
 
     # Initialize the template engine.
-    jinja_env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(template_folder),
+    jinja_backend_env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(backend_template_folder),
+        trim_blocks=True,
+        lstrip_blocks=True)
+
+    jinja_frontend_env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(frontend_template_folder),
         trim_blocks=True,
         lstrip_blocks=True)
 
     # Register the filter for mapping Entity type names to Java type names.
-    jinja_env.filters['javatype'] = javatype
-    jinja_env.filters['isSimpleType'] = isSimpleType
-    jinja_env.filters['uncapitalize'] = uncapitalize
+    jinja_backend_env.filters['javatype'] = javatype
+    jinja_backend_env.filters['isSimpleType'] = isSimpleType
+    jinja_backend_env.filters['uncapitalize'] = uncapitalize
 
     # Load the Java template
-    entity_template = jinja_env.get_template('entity.template')
-    controller_template = jinja_env.get_template('controller.template')
-    interface_template = jinja_env.get_template('interface.template')
-    service_template = jinja_env.get_template('service.template')
-    repository_template = jinja_env.get_template('repository.template')
+    entity_template = jinja_backend_env.get_template('entity.template')
+    controller_template = jinja_backend_env.get_template('controller.template')
+    interface_template = jinja_backend_env.get_template('interface.template')
+    service_template = jinja_backend_env.get_template('service.template')
+    repository_template = jinja_backend_env.get_template('repository.template')
 
     # Export to .dot file for visualization
     dot_folder = join(this_folder, 'dotexport')

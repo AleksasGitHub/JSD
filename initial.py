@@ -28,6 +28,11 @@ models_folder = join(project_base_generated,'models')
 frontend_folder = join(base_folder, 'demo-app')
 frontend_base_folder = join(frontend_folder, 'src')
 
+frontend_interface_folder = join(frontend_base_folder,'interfaces')
+
+generated_frontend_interface_folder = join(frontend_interface_folder,'generated')
+
+
 class SimpleType(object):
     def __init__(self, parent, name):
         self.parent = parent
@@ -127,6 +132,15 @@ def main(debug=False):
         mkdir(frontend_folder)
         copy_tree(join(this_folder, 'demo-app'), frontend_folder)
 
+     if not exists(frontend_interface_folder):
+        mkdir(frontend_interface_folder)
+
+    if not exists(generated_frontend_interface_folder):
+        mkdir(generated_frontend_interface_folder)
+    else:
+        shutil.rmtree(generated_frontend_interface_folder)
+        mkdir(generated_frontend_interface_folder)
+
     if not exists(project_base_generated):
         mkdir(project_base_generated)
     else:
@@ -164,12 +178,15 @@ def main(debug=False):
     jinja_backend_env.filters['isSimpleType'] = isSimpleType
     jinja_backend_env.filters['uncapitalize'] = uncapitalize
 
-    # Load the Java template
+    # Load the Java templates
     entity_template = jinja_backend_env.get_template('entity.template')
     controller_template = jinja_backend_env.get_template('controller.template')
     interface_template = jinja_backend_env.get_template('interface.template')
     service_template = jinja_backend_env.get_template('service.template')
     repository_template = jinja_backend_env.get_template('repository.template')
+
+    # Load the templates for frontend
+    interface_frontend_template = jinja_frontend_env.get_template('interface.template')
 
     # Export to .dot file for visualization
     dot_folder = join(this_folder, 'dotexport')
@@ -202,6 +219,9 @@ def main(debug=False):
         with open(join(repositories_folder,
                       "%sRepository.java" % entity.name.capitalize()), 'w') as f:
             f.write(repository_template.render(entity=entity, time=dt_string))
+        with open(join(generated_frontend_interface_folder,
+                    "I%sPopup.ts" % entity.name.capitalize()), 'w') as f:
+        f.write(interface_frontend_template.render(entity=entity, time=dt_string))
 
 
 if __name__ == "__main__":

@@ -29,8 +29,10 @@ frontend_folder = join(base_folder, 'demo-app')
 frontend_base_folder = join(frontend_folder, 'src')
 
 frontend_interface_folder = join(frontend_base_folder,'interfaces')
+components_folder = join(frontend_base_folder,'components')
 
 generated_frontend_interface_folder = join(frontend_interface_folder,'generated')
+generated_components_folder = join(components_folder,'generated')
 
 
 class SimpleType(object):
@@ -132,7 +134,7 @@ def main(debug=False):
         mkdir(frontend_folder)
         copy_tree(join(this_folder, 'demo-app'), frontend_folder)
 
-     if not exists(frontend_interface_folder):
+    if not exists(frontend_interface_folder):
         mkdir(frontend_interface_folder)
 
     if not exists(generated_frontend_interface_folder):
@@ -140,6 +142,15 @@ def main(debug=False):
     else:
         shutil.rmtree(generated_frontend_interface_folder)
         mkdir(generated_frontend_interface_folder)
+
+    if not exists(components_folder):
+        mkdir(components_folder)
+
+    if not exists(generated_components_folder):
+        mkdir(generated_components_folder)
+    else:
+        shutil.rmtree(generated_components_folder)
+        mkdir(generated_components_folder)
 
     if not exists(project_base_generated):
         mkdir(project_base_generated)
@@ -186,7 +197,9 @@ def main(debug=False):
     repository_template = jinja_backend_env.get_template('repository.template')
 
     # Load the templates for frontend
+    navbar_template = jinja_frontend_env.get_template('navbar.template')
     interface_frontend_template = jinja_frontend_env.get_template('interface.template')
+    popup_template = jinja_frontend_env.get_template('popup.template')
 
     # Export to .dot file for visualization
     dot_folder = join(this_folder, 'dotexport')
@@ -202,6 +215,9 @@ def main(debug=False):
 
     # Generate Java code
     dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    with open(join(generated_components_folder,
+                    "NavBar.tsx"), 'w') as f:
+        f.write(navbar_template.render(entities=entity_model.entities, time=dt_string))
     for entity in entity_model.entities:
         # For each entity generate java file
         with open(join(models_folder,
@@ -221,7 +237,10 @@ def main(debug=False):
             f.write(repository_template.render(entity=entity, time=dt_string))
         with open(join(generated_frontend_interface_folder,
                     "I%sPopup.ts" % entity.name.capitalize()), 'w') as f:
-        f.write(interface_frontend_template.render(entity=entity, time=dt_string))
+            f.write(interface_frontend_template.render(entity=entity, time=dt_string))
+        with open(join(generated_components_folder,
+                      "%sPopup.tsx" % entity.name.capitalize()), 'w') as f:
+            f.write(popup_template.render(entity=entity, time=dt_string))
 
 
 if __name__ == "__main__":

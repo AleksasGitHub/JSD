@@ -59,7 +59,7 @@ CollectionType:
 ;
 
 CollectionTypeType:
-    'Array' | 'Set'
+    'List' | 'Set'
 ;
 
 Plural:

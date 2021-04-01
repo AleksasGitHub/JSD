@@ -30,9 +30,11 @@ frontend_base_folder = join(frontend_folder, 'src')
 
 frontend_interface_folder = join(frontend_base_folder,'interfaces')
 components_folder = join(frontend_base_folder,'components')
+types_folder = join(frontend_base_folder,'types')
 
 generated_frontend_interface_folder = join(frontend_interface_folder,'generated')
 generated_components_folder = join(components_folder,'generated')
+generated_types_folder = join(types_folder,'generated')
 
 
 class SimpleType(object):
@@ -141,6 +143,15 @@ def main(debug=False):
         else:
             return e.name + 's'
 
+    def isRequired(p):
+        """
+        Check if property is required.
+        """
+        for constraint in p.constraints:
+            if constraint.type == 'NotNullable':
+                return True
+        return False
+
     # Create the output folder
     if not exists(base_folder):
         mkdir(base_folder)
@@ -170,6 +181,15 @@ def main(debug=False):
     else:
         shutil.rmtree(generated_components_folder)
         mkdir(generated_components_folder)
+
+    if not exists(types_folder):
+        mkdir(types_folder)
+
+    if not exists(generated_types_folder):
+        mkdir(generated_types_folder)
+    else:
+        shutil.rmtree(generated_types_folder)
+        mkdir(generated_types_folder)
 
     if not exists(project_base_generated):
         mkdir(project_base_generated)
@@ -212,6 +232,7 @@ def main(debug=False):
     jinja_frontend_env.filters['isSimpleType'] = isSimpleType
     jinja_frontend_env.filters['uncapitalize'] = uncapitalize
     jinja_frontend_env.filters['return_plural'] = return_plural
+    jinja_frontend_env.filters['isRequired'] = isRequired
 
     # Load the Java templates
     entity_template = jinja_backend_env.get_template('entity.template')
@@ -224,6 +245,7 @@ def main(debug=False):
     navbar_template = jinja_frontend_env.get_template('navbar.template')
     interface_frontend_template = jinja_frontend_env.get_template('interface.template')
     popup_template = jinja_frontend_env.get_template('popup.template')
+    types_template = jinja_frontend_env.get_template('types.template')
 
     # Export to .dot file for visualization
     dot_folder = join(this_folder, 'dotexport')
@@ -237,13 +259,15 @@ def main(debug=False):
     # Kreiranje .dot fajla u odnosu na izgradjeni model
     model_export(entity_model, join(dot_folder, 'example.dot'))
 
-    # Generate Java code
+    # Generate code
     dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     with open(join(generated_components_folder,
                     "NavBar.tsx"), 'w') as f:
         f.write(navbar_template.render(entities=entity_model.entities, time=dt_string))
+    with open(join(generated_types_folder,
+                    "Types.ts"), 'w') as f:
+        f.write(types_template.render(entities=entity_model.entities, time=dt_string))
     for entity in entity_model.entities:
-        # For each entity generate java file
         with open(join(models_folder,
                       "%s.java" % entity.name.capitalize()), 'w') as f:
             f.write(entity_template.render(entity=entity, time=dt_string))

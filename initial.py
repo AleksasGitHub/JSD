@@ -110,6 +110,16 @@ def main(debug=False):
                 'bool': 'boolean'
         }.get(s.name, s.name)
 
+    def jstype(s):
+        """
+        Maps type names from SimpleType to JavaScript.
+        """
+        return {
+                'bool': 'boolean',
+                'int': 'number',
+                'float': 'number'
+        }.get(s.name, s.name)
+
     def isSimpleType(s):
         """
         Check property type.
@@ -121,6 +131,15 @@ def main(debug=False):
         Change first letter to lowercase.
         """
         return s[0].lower() + s[1:]
+
+    def return_plural(e):
+        """
+        Return plural of name.
+        """
+        if e.plural:
+            return e.plural.value
+        else:
+            return e.name + 's'
 
     # Create the output folder
     if not exists(base_folder):
@@ -188,6 +207,11 @@ def main(debug=False):
     jinja_backend_env.filters['javatype'] = javatype
     jinja_backend_env.filters['isSimpleType'] = isSimpleType
     jinja_backend_env.filters['uncapitalize'] = uncapitalize
+
+    jinja_frontend_env.filters['jstype'] = jstype
+    jinja_frontend_env.filters['isSimpleType'] = isSimpleType
+    jinja_frontend_env.filters['uncapitalize'] = uncapitalize
+    jinja_frontend_env.filters['return_plural'] = return_plural
 
     # Load the Java templates
     entity_template = jinja_backend_env.get_template('entity.template')

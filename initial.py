@@ -31,11 +31,12 @@ frontend_base_folder = join(frontend_folder, 'src')
 frontend_interface_folder = join(frontend_base_folder,'interfaces')
 components_folder = join(frontend_base_folder,'components')
 types_folder = join(frontend_base_folder,'types')
+frontend_service_folder = join(frontend_base_folder,'services')
 
 generated_frontend_interface_folder = join(frontend_interface_folder,'generated')
 generated_components_folder = join(components_folder,'generated')
 generated_types_folder = join(types_folder,'generated')
-
+generated_frontend_service_folder = join(frontend_service_folder,'generated')
 
 class SimpleType(object):
     def __init__(self, parent, name):
@@ -182,6 +183,15 @@ def main(debug=False):
         shutil.rmtree(generated_components_folder)
         mkdir(generated_components_folder)
 
+    if not exists(frontend_service_folder):
+        mkdir(frontend_service_folder)
+
+    if not exists(generated_frontend_service_folder):
+        mkdir(generated_frontend_service_folder)
+    else:
+        shutil.rmtree(generated_frontend_service_folder)
+        mkdir(generated_frontend_service_folder)
+
     if not exists(types_folder):
         mkdir(types_folder)
 
@@ -246,6 +256,7 @@ def main(debug=False):
     interface_frontend_template = jinja_frontend_env.get_template('interface.template')
     popup_template = jinja_frontend_env.get_template('popup.template')
     types_template = jinja_frontend_env.get_template('types.template')
+    service_frontend_template = jinja_frontend_env.get_template('service.template')
 
     # Export to .dot file for visualization
     dot_folder = join(this_folder, 'dotexport')
@@ -289,7 +300,9 @@ def main(debug=False):
         with open(join(generated_components_folder,
                       "%sPopup.tsx" % entity.name.capitalize()), 'w') as f:
             f.write(popup_template.render(entity=entity, time=dt_string))
-
+        with open(join(generated_frontend_service_folder,
+                      "%sService.ts" % entity.name.capitalize()), 'w') as f:
+            f.write(service_frontend_template.render(entity=entity, time=dt_string))
 
 if __name__ == "__main__":
     main()

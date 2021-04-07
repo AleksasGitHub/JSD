@@ -33,11 +33,14 @@ frontend_interface_folder = join(frontend_base_folder,'interfaces')
 components_folder = join(frontend_base_folder,'components')
 types_folder = join(frontend_base_folder,'types')
 frontend_service_folder = join(frontend_base_folder,'services')
+containers_folder = join(frontend_base_folder,'containers')
 
 generated_frontend_interface_folder = join(frontend_interface_folder,'generated')
 generated_components_folder = join(components_folder,'generated')
 generated_types_folder = join(types_folder,'generated')
 generated_frontend_service_folder = join(frontend_service_folder,'generated')
+generated_containers_folder = join(containers_folder,'generated')
+
 
 class SimpleType(object):
     def __init__(self, parent, name):
@@ -193,6 +196,15 @@ def main(debug=False):
         shutil.rmtree(generated_frontend_service_folder)
         mkdir(generated_frontend_service_folder)
 
+    if not exists(containers_folder):
+        mkdir(containers_folder)
+
+    if not exists(generated_containers_folder):
+        mkdir(generated_containers_folder)
+    else:
+        shutil.rmtree(generated_containers_folder)
+        mkdir(generated_containers_folder)
+
     if not exists(types_folder):
         mkdir(types_folder)
 
@@ -262,6 +274,7 @@ def main(debug=False):
     popup_template = jinja_frontend_env.get_template('popup.template')
     types_template = jinja_frontend_env.get_template('types.template')
     service_frontend_template = jinja_frontend_env.get_template('service.template')
+    preview_template = jinja_frontend_env.get_template('preview.template')
 
     # Export to .dot file for visualization
     dot_folder = join(this_folder, 'dotexport')
@@ -311,6 +324,10 @@ def main(debug=False):
         with open(join(dtos_folder,
                       "%sDTO.java" % entity.name.capitalize()), 'w') as f:
             f.write(dtos_template.render(entity=entity, time=dt_string))
+        with open(join(generated_containers_folder,
+                      "%s.tsx" % (entity.plural.value.capitalize() if entity.plural else (entity.name.capitalize() + 's'))), 'w') as f:
+            f.write(preview_template.render(entity=entity, time=dt_string))
+
 
 if __name__ == "__main__":
     main()

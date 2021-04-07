@@ -24,6 +24,7 @@ controllers_folder = join(project_base_generated,'controllers')
 repositories_folder = join(project_base_generated,'repositories')
 services_folder = join(project_base_generated,'services')
 models_folder = join(project_base_generated,'models')
+dtos_folder = join(project_base_generated,'dtos')
 
 frontend_folder = join(base_folder, 'demo-app')
 frontend_base_folder = join(frontend_folder, 'src')
@@ -222,6 +223,9 @@ def main(debug=False):
     if not exists(controllers_folder):
         mkdir(controllers_folder)
 
+    if not exists(dtos_folder):
+        mkdir(dtos_folder)
+
     # Initialize the template engine.
     jinja_backend_env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(backend_template_folder),
@@ -250,6 +254,7 @@ def main(debug=False):
     interface_template = jinja_backend_env.get_template('interface.template')
     service_template = jinja_backend_env.get_template('service.template')
     repository_template = jinja_backend_env.get_template('repository.template')
+    dtos_template = jinja_backend_env.get_template('dto.template')
 
     # Load the templates for frontend
     navbar_template = jinja_frontend_env.get_template('navbar.template')
@@ -303,6 +308,9 @@ def main(debug=False):
         with open(join(generated_frontend_service_folder,
                       "%sService.ts" % entity.name.capitalize()), 'w') as f:
             f.write(service_frontend_template.render(entity=entity, time=dt_string))
+        with open(join(dtos_folder,
+                      "%sDTO.java" % entity.name.capitalize()), 'w') as f:
+            f.write(dtos_template.render(entity=entity, time=dt_string))
 
 if __name__ == "__main__":
     main()

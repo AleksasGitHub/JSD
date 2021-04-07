@@ -1,0 +1,35 @@
+entity Patient
+    [Unique, Length=13, NotNullable]
+    jmbg: string
+    [NotNullable]
+    name: string
+    [NotNullable]
+    lastname: string
+    [OneToMany]
+    appointments: List<Appointment>
+
+entity Doctor
+    [Unique, Length=13, NotNullable]
+    jmbg: string
+    [NotNullable]
+    name: string
+    [NotNullable]
+    lastname: string
+    specijalizacija: string
+    [OneToMany]
+    appointments: List<Appointment>
+
+entity Appointment
+    [ManyToOne]
+    patient: Patient
+    [ManyToOne]
+    doctor: Doctor
+    date: string
+    [OneToMany]
+    drugs: List<Drug>
+    
+entity Drug
+    [Unique, Length=5, NotNullable]
+    pid: string
+    [NotNullable]
+    price: float

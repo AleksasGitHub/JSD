@@ -1,0 +1,5 @@
+Arpeggio==1.10.1
+click==7.1.2
+Jinja2==2.11.3
+MarkupSafe==1.1.1
+textX==2.3.0

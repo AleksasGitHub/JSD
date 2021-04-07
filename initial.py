@@ -326,6 +326,41 @@ def main(debug=False):
                 return True
         return False
 
+    def property_constraint(constraint):
+        """
+        Return constraint for backend.
+        """
+        if constraint.type == 'NotNullable':
+            return 'nullable=false'
+        elif constraint.type == 'Unique':
+            return 'unique=true'
+        else:
+            return constraint.type.lower() + '=' + str(constraint.value)
+
+    def property_decorator(decorator):
+        """
+        Return decorator for backend.
+        """
+        return decorator.type.lower() + '=' + decorator.type + 'Type.' + decorator.value
+
+    def join_table(property):
+        """
+        Return join expression for property.
+        """
+        if hasattr(property, 'join_table'):
+            return '@JoinTable(name = "' + property.join_table + '", joinColumns=@JoinColumn(name = "' + property.name + '_id"), inverseJoinColumns=@JoinColumn(name = "' + property.related_name + '_id"))'
+        else:
+            return ''
+
+    def return_plural(e):
+        """
+        Return plural of name.
+        """
+        if e.plural:
+            return e.plural.value
+        else:
+            return e.name + 's'
+
     # Create the output folder
     if not exists(base_folder):
         mkdir(base_folder)
@@ -422,6 +457,10 @@ def main(debug=False):
     jinja_backend_env.filters['javatype'] = javatype
     jinja_backend_env.filters['isSimpleType'] = isSimpleType
     jinja_backend_env.filters['uncapitalize'] = uncapitalize
+    jinja_backend_env.filters['property_constraint'] = property_constraint
+    jinja_backend_env.filters['property_decorator'] = property_decorator
+    jinja_backend_env.filters['join_table'] = join_table
+    jinja_backend_env.filters['return_plural'] = return_plural
 
     jinja_frontend_env.filters['jstype'] = jstype
     jinja_frontend_env.filters['isSimpleType'] = isSimpleType

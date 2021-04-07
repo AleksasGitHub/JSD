@@ -352,14 +352,27 @@ def main(debug=False):
         else:
             return ''
 
-    def return_plural(e):
+    def constraint_type(constraint):
         """
-        Return plural of name.
+        Return constraint type.
         """
-        if e.plural:
-            return e.plural.value
+        if  constraint.type=='Length':
+            return '.length('+ str(constraint.value) + ',\'Property must be ' + str(constraint.value) + ' characters long\')'
+        elif constraint.type=='NotNullable':
+            return '.required(\'Property is required \')'
         else:
-            return e.name + 's'
+            return ''
+
+    def initial_value(property):
+        """
+        Return inital value based on property type.
+        """
+        if property.type.name == 'string':
+            return '\'\''
+        elif property.type.name == 'boolean':
+            return 'false'
+        else:
+            return 0
 
     # Create the output folder
     if not exists(base_folder):
@@ -467,6 +480,8 @@ def main(debug=False):
     jinja_frontend_env.filters['uncapitalize'] = uncapitalize
     jinja_frontend_env.filters['return_plural'] = return_plural
     jinja_frontend_env.filters['isRequired'] = isRequired
+    jinja_frontend_env.filters['constraint_type'] = constraint_type
+    jinja_frontend_env.filters['initial_value'] = initial_value
 
     # Load the Java templates
     entity_template = jinja_backend_env.get_template('entity.template')

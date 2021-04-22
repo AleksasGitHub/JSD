@@ -153,6 +153,7 @@ def generate_code(entity_model, jinja_backend_env, jinja_frontend_env):
     entity_generated_template = jinja_backend_env.get_template('entity_generated.template')
     controller_generated_template = jinja_backend_env.get_template('controller_generated.template')
     dtos_generated_template = jinja_backend_env.get_template('dto_generated.template')
+    repository_generated_template = jinja_backend_env.get_template('repository_generated.template')
 
     entity_template = jinja_backend_env.get_template('entity.template')
     repository_template = jinja_backend_env.get_template('repository.template')
@@ -185,6 +186,9 @@ def generate_code(entity_model, jinja_backend_env, jinja_frontend_env):
         with open(join(folder_config.backend_generated_models_folder,
                         "%sGenerated.java" % entity.name.capitalize()), 'w') as f:
             f.write(entity_generated_template.render(entity=entity, time=dt_string))
+        with open(join(folder_config.backend_generated_repositories_folder,
+                        "%sGeneratedRepository.java" % entity.name.capitalize()), 'w') as f:
+            f.write(repository_generated_template.render(entity=entity, time=dt_string))
         with open(join(folder_config.backend_generated_interface_folder,
                         "%sGeneratedInterface.java" % entity.name.capitalize()), 'w') as f:
             f.write(interface_generated_backend_template.render(entity=entity, time=dt_string))

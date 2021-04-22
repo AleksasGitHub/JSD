@@ -1,4 +1,4 @@
-+backend_folder = backend_base_folder = backend_base_generated_folder = ''
+backend_folder = backend_base_folder = backend_base_generated_folder = ''
 
 backend_generated_interface_folder = backend_generated_controllers_folder = backend_generated_repositories_folder = ''
 backend_generated_service_folder = backend_generated_models_folder = backend_generated_dtos_folder = ''

@@ -151,6 +151,7 @@ def generate_code(entity_model, jinja_backend_env, jinja_frontend_env):
     interface_generated_backend_template = jinja_backend_env.get_template('interface_generated.template')
     service_generated_backend_template = jinja_backend_env.get_template('service_generated.template')
     entity_generated_template = jinja_backend_env.get_template('entity_generated.template')
+    controller_generated_template = jinja_backend_env.get_template('controller_generated.template')
     dtos_generated_template = jinja_backend_env.get_template('dto_generated.template')
 
     entity_template = jinja_backend_env.get_template('entity.template')
@@ -183,13 +184,16 @@ def generate_code(entity_model, jinja_backend_env, jinja_frontend_env):
     for entity in entity_model.entities:
         with open(join(folder_config.backend_generated_models_folder,
                         "%sGenerated.java" % entity.name.capitalize()), 'w') as f:
-            f.write(entity_generated_template.render(entity=entity, time=dt_string)
+            f.write(entity_generated_template.render(entity=entity, time=dt_string))
         with open(join(folder_config.backend_generated_interface_folder,
                         "%sGeneratedInterface.java" % entity.name.capitalize()), 'w') as f:
             f.write(interface_generated_backend_template.render(entity=entity, time=dt_string))
         with open(join(folder_config.backend_generated_service_folder,
                         "%sGeneratedService.java" % entity.name.capitalize()), 'w') as f:
             f.write(service_generated_backend_template.render(entity=entity, time=dt_string))
+        with open(join(folder_config.backend_generated_controllers_folder,
+                        "%sGeneratedController.java" % (entity.plural.value.capitalize() if entity.plural else (entity.name.capitalize() + 's'))), 'w') as f:
+            f.write(controller_generated_template.render(entity=entity, time=dt_string))
         with open(join(folder_config.backend_generated_dtos_folder,
                         "%sGeneratedDTO.java" % entity.name.capitalize()), 'w') as f:
             f.write(dtos_generated_template.render(entity=entity, time=dt_string))

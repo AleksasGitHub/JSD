@@ -148,12 +148,8 @@ def generate_code(entity_model, jinja_backend_env, jinja_frontend_env):
     #region Templates
 
     # Load the Java templates for backend
-    entity_generated_template = jinja_backend_env.get_template('entity_generated.template')
-    repository_generated_template = jinja_backend_env.get_template('repository_generated.template')
     interface_generated_backend_template = jinja_backend_env.get_template('interface_generated.template')
     service_generated_backend_template = jinja_backend_env.get_template('service_generated.template')
-    controller_generated_template = jinja_backend_env.get_template('controller_generated.template')
-    dtos_generated_template = jinja_backend_env.get_template('dto_generated.template')
 
     entity_template = jinja_backend_env.get_template('entity.template')
     repository_template = jinja_backend_env.get_template('repository.template')
@@ -183,24 +179,12 @@ def generate_code(entity_model, jinja_backend_env, jinja_frontend_env):
             f.write(types_template.render(entities=entity_model.entities, time=dt_string))
 
     for entity in entity_model.entities:
-         with open(join(folder_config.backend_generated_models_folder,
-                        "%sGenerated.java" % entity.name.capitalize()), 'w') as f:
-            f.write(entity_generated_template.render(entity=entity, time=dt_string))
-        with open(join(folder_config.backend_generated_repositories_folder,
-                        "%sGeneratedRepository.java" % entity.name.capitalize()), 'w') as f:
-            f.write(repository_generated_template.render(entity=entity, time=dt_string))
         with open(join(folder_config.backend_generated_interface_folder,
                         "%sGeneratedInterface.java" % entity.name.capitalize()), 'w') as f:
             f.write(interface_generated_backend_template.render(entity=entity, time=dt_string))
         with open(join(folder_config.backend_generated_service_folder,
                         "%sGeneratedService.java" % entity.name.capitalize()), 'w') as f:
             f.write(service_generated_backend_template.render(entity=entity, time=dt_string))
-        with open(join(folder_config.backend_generated_controllers_folder,
-                        "%sGeneratedController.java" % (entity.plural.value.capitalize() if entity.plural else (entity.name.capitalize() + 's'))), 'w') as f:
-            f.write(controller_generated_template.render(entity=entity, time=dt_string))
-        with open(join(folder_config.backend_generated_dtos_folder,
-                        "%sGeneratedDTO.java" % entity.name.capitalize()), 'w') as f:
-            f.write(dtos_generated_template.render(entity=entity, time=dt_string))
         if not os.path.exists(join(folder_config.backend_models_folder, "%s.java" % entity.name.capitalize())):
             with open(join(folder_config.backend_models_folder,
                             "%s.java" % entity.name.capitalize()), 'w') as f:

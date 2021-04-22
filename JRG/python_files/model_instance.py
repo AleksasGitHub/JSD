@@ -150,6 +150,7 @@ def generate_code(entity_model, jinja_backend_env, jinja_frontend_env):
     # Load the Java templates for backend
     interface_generated_backend_template = jinja_backend_env.get_template('interface_generated.template')
     service_generated_backend_template = jinja_backend_env.get_template('service_generated.template')
+    entity_generated_template = jinja_backend_env.get_template('entity_generated.template')
 
     entity_template = jinja_backend_env.get_template('entity.template')
     repository_template = jinja_backend_env.get_template('repository.template')
@@ -179,6 +180,9 @@ def generate_code(entity_model, jinja_backend_env, jinja_frontend_env):
             f.write(types_template.render(entities=entity_model.entities, time=dt_string))
 
     for entity in entity_model.entities:
+        with open(join(folder_config.backend_generated_models_folder,
+                        "%sGenerated.java" % entity.name.capitalize()), 'w') as f:
+            f.write(entity_generated_template.render(entity=entity, time=dt_string)
         with open(join(folder_config.backend_generated_interface_folder,
                         "%sGeneratedInterface.java" % entity.name.capitalize()), 'w') as f:
             f.write(interface_generated_backend_template.render(entity=entity, time=dt_string))

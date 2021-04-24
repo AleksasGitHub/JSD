@@ -17,7 +17,7 @@ public class {{entity.name}}Generated {
 
   {% for property in entity.properties %}{% if property.type | isSimpleType %}  @Column{% if property.constraints %}({% for n in range(property.constraints | length) %}{{property.constraints[n]|property_constraint}}{% if n < property.constraints | length - 1 %}, {% endif %}{% endfor %})
   {% else %}
-
+  
   {% endif %}
   {% else %}
   {% if property.relation %}  @{{property.relation.type}}{% if property.relation.decorators %}({% for n in range(property.relation.decorators | length)%}{{property.relation.decorators[n]|property_decorator}}{% if n != (property.relation.decorators | length - 1)%}, {% endif %}

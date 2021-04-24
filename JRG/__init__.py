@@ -7,12 +7,12 @@ import click
 
 @language('full_stack_lang', '*.jrg')
 def full_stack_lang():
-    ''' Language description '''
+    '''Entity description based language'''
     return get_entity_mm()
 
 @generator('full_stack_lang', 'fullstack')
 def full_stack_gen(metamodel, model, output_path, overwrite, debug):
-    ''' Generator description '''
+    '''Generator for fullstack (Java SpringBoot & React)'''
     input_file = model._tx_filename
     base_dir = output_path if output_path else os.path.dirname(input_file)
     base_name, _ = os.path.splitext(os.path.basename(input_file))

@@ -2,13 +2,37 @@
 <br/>
 <span>Simple DSL which is used to generate Java SpringBoot and React.js project. Precisely, it generates repositoires, services, controllers, models and dtos for backend and navbar, preview page, popup, interfaces, services and models for frontend.</span>
 <br/>
+<h3>Usage</h3>
+[Optional] Create virtual environment,
+e.g.
+<ol>
+    <li>python -m venv venv</li>
+    <li>
+        <ul>
+            <li><b>Windows</b> .\venv\Scripts\activate</li>
+            <li><b>Linux</b> source .\venv\bin\activate</li>
+        </ul>
+    </li>
+</ol>
+Installation
+<ol>
+  <li>
+      pip install -e (full path to JSD)
+  </li>
+  <li>
+      textX generate (path to file.jrg) --target fullstack [--output-path (path) --overwrite]
+  </li>
+</ol>
+<br/>
+<h3>Requirements</h3>
+<b>User must create database 'demoDB' in Microsoft SQL Server</b>
+<br/>
 <h3>Language grammar</h3>
 <ul>
   <li>
     Each entity must start with reserved word <b>entity</b> and name must be
     <b>capitalized</b>
   </li>
-  <li>Entity name must be capitalized</li>
   <li>Entity can't contain multiple properties of same entity type</li>
   <li>
     Properties, format(<b>name : type</b>), can be

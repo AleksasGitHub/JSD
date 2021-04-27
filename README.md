@@ -9,15 +9,22 @@ e.g.
     <li>python -m venv venv</li>
     <li>
         <ul>
-            <li><b>Windows</b> .\venv\Scripts\activate</li>
-            <li><b>Linux</b> source .\venv\bin\activate</li>
+            <li><b>Windows:</b> .\venv\Scripts\activate</li>
+            <li><b>Linux:</b>&emsp;&emsp;source .\venv\bin\activate</li>
         </ul>
     </li>
 </ol>
 Installation
 <ol>
   <li>
-      pip install -e (full path to JSD)
+      <ul>
+          <li>
+            <b>With downloaded code:</b>&emsp;&emsp;pip install -e (full path to JSD)
+          </li>
+          <li>
+            <b>Without downloaded code:</b>&ensp;pip install -i https://test.pypi.org/simple/ JRG
+          </li>
+      </ul>
   </li>
   <li>
       textX generate (path to file.jrg) --target fullstack [--output-path (path) --overwrite]

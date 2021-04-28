@@ -23,8 +23,8 @@ setup(
     license=LICENSE,
     packages=find_packages(),
     include_package_data=True,
-    package_data={"": ["*.tx"]},
-    install_requires=["textX[cli]"],
+    package_data={"": ["*.tx", "templates/**/*.template", "python_files/*.py", "demo/*", "demo/**/**/**/*", "demo/**/**/**/**/**/**/*", "demo/**/**/**/**/**/**/config/*", "demo/.mvn/wrapper/*", "demo-app/*", "demo-app/src/*", "demo-app/src/components/Home/*", "demo-app/public/*", "demo-app/.idea/*", "demo-app/.env.development"]},
+    install_requires=["textX[cli]", "Jinja2"],
     entry_points={
         'textx_languages': [
             'full_stack_lang = JRG:full_stack_lang',
